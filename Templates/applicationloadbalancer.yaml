@@ -1,0 +1,76 @@
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  vpcStackName: #ParameterKey
+    Description: 'Name of your VPC CFN Stack'
+    Type: String
+    Default: 'sgpvpc'
+  instancev1Name:
+    Description: 'Name of your  CFN Stack'
+    Type: String
+    Default: 'instancev1'
+  instancev2Name:
+    Description: 'Name of your  CFN Stack'
+    Type: String
+    Default: 'instancev2'
+  AlsecurityGroup:
+    Description: 'Name of your alb security Stack'
+    Type: String
+    Default: 'sgvpc-securitygroup' 
+Resources:
+  LoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: ApplicationLoadBalancer
+      Scheme: internet-facing
+      Subnets:
+        - !ImportValue 
+            Fn::Sub: ${vpcStackName}-publicSubnet1ID
+        - !ImportValue 
+            Fn::Sub: ${vpcStackName}-publicSubnet2ID
+        - !ImportValue 
+            Fn::Sub: ${vpcStackName}-publicSubnet3ID
+      SecurityGroups: 
+        - !ImportValue 
+            Fn::Sub: ${AlsecurityGroup}-ALBSecurityGroupID
+      #   - !Ref LoadBalancerSecurityGroup
+  LoadBalancerListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      LoadBalancerArn: !Ref LoadBalancer
+      Port: 80
+      Protocol: HTTP
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref ApplicationTargetGroup
+  ApplicationTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      HealthCheckIntervalSeconds: 30
+      HealthCheckProtocol: HTTP
+      HealthCheckPath: '/'
+      HealthCheckPort: traffic-port
+      HealthCheckTimeoutSeconds: 15
+      HealthyThresholdCount: 5
+      UnhealthyThresholdCount: 3
+      HealthCheckEnabled: true
+      Matcher:
+        HttpCode: '200'
+      Name: ApplicationTargetGroup
+      VpcId:
+        Fn::ImportValue:
+          !Sub ${vpcStackName}-VPCID 
+      Port: 80
+      Protocol: HTTP
+  #     # TargetGroupAttributes: #need to find
+  #     #   - Key: deregistration_delay.timeout_seconds
+  #     #     Value: '20'
+      Targets:
+      - Id: 
+          !ImportValue
+            Fn::Sub: ${instancev1Name}-publicInstance1ID
+        Port: 80
+      - Id: 
+          !ImportValue
+            Fn::Sub: ${instancev2Name}-publicInstance2ID
+        Port: 80
+
