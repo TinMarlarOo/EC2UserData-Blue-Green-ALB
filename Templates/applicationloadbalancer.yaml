@@ -7,15 +7,15 @@ Parameters:
   instancev1Name:
     Description: 'Name of your  CFN Stack'
     Type: String
-    Default: 'instancev1'
+    Default: 'public-instance-v1'
   instancev2Name:
     Description: 'Name of your  CFN Stack'
     Type: String
-    Default: 'instancev2'
+    Default: 'public-instance-v2'
   AlsecurityGroup:
     Description: 'Name of your alb security Stack'
     Type: String
-    Default: 'sgvpc-securitygroup' 
+    Default: 'sgpvpc-securitygroup' 
 Resources:
   LoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer

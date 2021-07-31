@@ -2,7 +2,7 @@
 
 # Steps: 
 
-## 1. Create common VPC teamplate and deploy in mulitples region (sg, syd, tokyo)
+## 1. Create common VPC teamplate and deploy in sg
 - [vpc.yaml](./Templates/vpc.yaml)
 
 ```bash 
@@ -19,20 +19,20 @@ aws cloudformation create-stack --stack-name sgpvpc-securitygroup --template-bod
 -[public-instance-v1.yaml](./Templates/public-instance-v1.yaml)
 
 ```bash
-aws cloudformation create-stack --stack-name public-instance-v1 --template-body file://public-instance-v1.yaml --parameters ParameterKey='vpcStackName',ParameterValue='sgpvpc' ParameterKey='vpcSecurityGroupStackName',ParameterValue='sgvpc-securitygroup' ParameterKey='appVersion',ParameterValue='v1'
+aws cloudformation create-stack --stack-name public-instance-v1 --template-body file://public-instance-v1.yaml --parameters ParameterKey='vpcStackName',ParameterValue='sgpvpc' ParameterKey='vpcSecurityGroupStackName',ParameterValue='sgpvpc-securitygroup' ParameterKey='appVersion',ParameterValue='v1'
 ```
 ## 4. Create instance 1 web server
 -[public-instance-v2.yaml](./Templates/public-instance-v2.yaml)
 
 ```bash
-aws cloudformation create-stack --stack-name public-instance-v2 --template-body file://public-instance-v2.yaml --parameters ParameterKey='vpcStackName',ParameterValue='sgpvpc' ParameterKey='vpcSecurityGroupStackName',ParameterValue='sgvpc-securitygroup' ParameterKey='appVersion',ParameterValue='v2'
+aws cloudformation create-stack --stack-name public-instance-v2 --template-body file://public-instance-v2.yaml --parameters ParameterKey='vpcStackName',ParameterValue='sgpvpc' ParameterKey='vpcSecurityGroupStackName',ParameterValue='sgpvpc-securitygroup' ParameterKey='appVersion',ParameterValue='v2'
 ```
 
 ## 5.Setup Application loadbalancer
 -[applicationloadbalancer.yaml](./Templates/applicationloadbalancer.yaml)
 
 ```bash
-aws cloudformation create-stack --stack-name applicationloadbalancer--template-body file://applicationloadbalancer.yaml
+aws cloudformation create-stack --stack-name applicationloadbalancer --template-body file://applicationloadbalancer.yaml
 ``` 
 
 <br>
